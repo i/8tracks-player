@@ -1,0 +1,29 @@
+{
+    "api_version": 3,
+    "errors": null,
+    "notices": "",
+    "set": {
+        "at_beginning": false,
+        "at_end": false,
+        "at_last_track": false,
+        "skip_allowed": false,
+        "track": {
+            "buy_icon": "http://8tracks.com/assets/buy/itunes.png",
+            "buy_link": "http://redirect.viglink.com/?key=f4be5dc2078785c5846df105343edee0&out=https%3A%2F%2Fsearch.itunes.apple.com%2FWebObjects%2FMZSearch.woa%2Fwa%2Fsearch%3Fterm%3DOxia%2520Domino",
+            "buy_text": "iTunes",
+            "faved_by_current_user": false,
+            "full_length": true,
+            "id": 67,
+            "name": "Domino",
+            "performer": "Oxia",
+            "release_name": "Speicher 34",
+            "stream_source": "upload_v3",
+            "track_file_stream_url": "http://cft.8tracks.com/tf/000/000/067/1zSYPd.48k.v3.m4a",
+            "uid": 67,
+            "url": "http://8tracks.com/tracks/67",
+            "user_id": 2,
+            "year": null
+        }
+    },
+    "status": "200 OK"
+}

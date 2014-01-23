@@ -1,0 +1,19 @@
+{
+  "manifest_version": 2,
+
+  "name": "8tracks Player",
+  "description": "View list of mixes",
+  "version": "1.0",
+
+  "browser_action": {
+    "default_icon": "img/8tracks.png",
+    "default_popup": "popup.html"
+  },
+  "background": {
+      "page": "background.html",
+      "persistent": true
+    },
+  "permissions": [
+    "http://8tracks.com/*"
+    ]
+}
