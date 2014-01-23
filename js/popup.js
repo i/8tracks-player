@@ -1,4 +1,3 @@
-// TODO DON'T FORGET: Reporting the song
 
 onload = setTimeout(init, 0)
 
@@ -38,7 +37,7 @@ function init() {
   $('#artist').text(play.set.track.performer)
   $('#playlist').text(play.
   */
-  setTimeout(init, 500)
+  setTimeout(init, 40)
 }
 
 var mixList = {
@@ -66,17 +65,9 @@ $('#pause-resume-button').click(function() {
   var bg = chrome.extension.getBackgroundPage()
 
   if ($('#pause-resume-button').hasClass('fi-pause')) {
-    $('#pause-resume-button')
-      .removeClass('fi-play')
-      .addClass('fi-pause')
-    console.log('resuming')
     bg.bg8.pause()
   }
   else if ($('#pause-resume-button').hasClass('fi-play')) {
-    $('#pause-resume-button')
-      .removeClass('fi-pause')
-      .addClass('fi-play')
-    console.log('pausing')
     bg.bg8.resume()
   }
 

@@ -82,7 +82,7 @@ var bg8 = {
 
   nextSong: function() {
     bg8.song_reported = false
-    var url = 'http://8tracks.com/sets/' + bg8.play_token + '/next.json?api_key=39501dd2e8f36ad35f4738ac3a9e704813e1695d&api_version=3&mix_id=' + bg.mix_id
+    var url = 'http://8tracks.com/sets/' + bg8.play_token + '/next.json?api_key=39501dd2e8f36ad35f4738ac3a9e704813e1695d&api_version=3&mix_id=' + bg8.mix_id
     req = new XMLHttpRequest()
     req.open("GET", url, true)
     req.onload = function(err) {
@@ -113,7 +113,7 @@ setInterval(function() {
       }
     }
   }
-  if (player.currentTime == player.duration && currentTime > 0) {
+  if (player.currentTime == player.duration && player.currentTime > 0) {
     bg8.nextSong()
   }
 }, 500)
