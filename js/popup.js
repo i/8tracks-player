@@ -1,25 +1,31 @@
+/*****************************************************
+ * Project: 8tracks-Player Chrome Extension          *
+ * Author: Ian Lozinski    Date: 01/23/14            *
+ *                                                   *
+ * Description: Lets users listen to 8tracks mixes.  *
+ * This project is still very much in beta and isn't *
+ * perfrect by means. Hopefully you got that.        *
+ *****************************************************/
 
-onload = setTimeout(init, 0)
 
 /*
- * This function runs when popup opens each time.
+ * This function runs in a loop whenever the popup is open.
+ * It keeps the track info updated.
  */
 function init() {
   var bg = chrome.extension.getBackgroundPage()
-  if (bg.bg8.current_mix != null) {
+  if (bg.BG8.current_mix != null) {
     // show mix info
-    $('#title').text(bg.bg8.current_mix.set.track.name)    // show song title
-    $('#artist').text(bg.bg8.current_mix.set.track.performer)  // show artist name
-    $('#playlist').text(bg.bg8.mix_name)   // show mix name
-    $('#cover').attr('src', bg.bg8.cover_url) // show mix cover image
+    $('#title').text(bg.BG8.current_mix.set.track.name)    // show song title
+    $('#artist').text(bg.BG8.current_mix.set.track.performer)  // show artist name
+    $('#playlist').text(bg.BG8.mix_name)   // show mix name
+    $('#cover').attr('src', bg.BG8.cover_url) // show mix cover image
 
-    if (bg.bg8.isPlaying()) {
+    if (bg.BG8.isPlaying()) {
       $('#pause-resume-button').removeClass('fi-play').addClass('fi-pause')
     } else {
       $('#pause-resume-button').removeClass('fi-pause').addClass('fi-play')
     }
-
-
 
   } else {
     $('#title').text(' - ')
@@ -27,17 +33,10 @@ function init() {
     $('#playlist').text(' - ')
 
   }
-    $('#current-time').text(bg.bg8.currentTime()) // get current time of track
-    $('#duration').text(bg.bg8.getDuration()) // get length of track
+    $('#current-time').text(bg.BG8.currentTime()) // get current time of track
+    $('#duration').text(bg.BG8.getDuration()) // get length of track
 
-  // DEBUG ONLY
-  /*
-  var play = { "api_version": 3, "errors": null, "notices": "", "set": { "at_beginning": false, "at_end": false, "at_last_track": false, "skip_allowed": false, "track": { "buy_icon": "http://8tracks.com/assets/buy/itunes.png", "buy_link": "http://redirect.viglink.com/?key=f4be5dc2078785c5846df105343edee0&out=https%3A%2F%2Fsearch.itunes.apple.com%2FWebObjects%2FMZSearch.woa%2Fwa%2Fsearch%3Fterm%3DOxia%2520Domino", "buy_text": "iTunes", "faved_by_current_user": false, "full_length": true, "id": 67, "name": "Domino", "performer": "Oxia", "release_name": "Speicher 34", "stream_source": "upload_v3", "track_file_stream_url": "http://cft.8tracks.com/tf/000/000/067/1zSYPd.48k.v3.m4a", "uid": 67, "url": "http://8tracks.com/tracks/67", "user_id": 2, "year": null } }, "status": "200 OK" };
-  $('#title').text(play.set.track.name)
-  $('#artist').text(play.set.track.performer)
-  $('#playlist').text(play.
-  */
-  setTimeout(init, 40)
+  setTimeout(init, 100) // Call init() after 100ms.
 }
 
 var mixList = {
@@ -60,28 +59,34 @@ var mixList = {
 
 }
 
+/*
+ * Pause or resume song when pause-resume-button is clicked.
+ */
 $('#pause-resume-button').click(function() {
-  console.log('clicked ze button')
-  var bg = chrome.extension.getBackgroundPage()
-
   if ($('#pause-resume-button').hasClass('fi-pause')) {
-    bg.bg8.pause()
+    chrome.extension.getBackgroundPage().BG8.pause()
   }
   else if ($('#pause-resume-button').hasClass('fi-play')) {
-    bg.bg8.resume()
+    chrome.extension.getBackgroundPage().BG8.resume()
   }
-
 })
 
+/*
+ *  Skip song when next-button is clicked.
+ */
 $('#next-button').click(function() {
   var bg = chrome.extension.getBackgroundPage()
-  if (bg.bg8.current_mix.set.skip_allowed) {
-    bg.bg8.nextSong()
+  if (bg.BG8.current_mix.set.skip_allowed) {
+    bg.BG8.nextSong()
   } else {
     console.log('skip not allowed')
   }
 })
 
+
+/*
+ * Autocomplete bulllllllllllllshit.
+ */
 $('#search').autocomplete({
   source: function(req, res) {
     $.getJSON("http://8tracks.com/mix_sets/tags:" + req.term + ".json",
@@ -106,19 +111,20 @@ $('#search').autocomplete({
   // Callback after JSON is returned
   select: function(event, res) {
     var bg = chrome.extension.getBackgroundPage()
-    bg.bg8.mix_id = res.item.mix_id
-    bg.bg8.mix_name = res.item.label
-    if (bg.bg8.play_token == null) {
-      bg.bg8.getPlayToken()
+    bg.BG8.mix_id = res.item.mix_id
+    bg.BG8.mix_name = res.item.label
+    if (bg.BG8.play_token == null) {
+      bg.BG8.getPlayToken()
     } else {
-      bg.bg8.playMix()
+      bg.BG8.playMix()
     }
-    bg.bg8.cover_url = res.item.cover
+    bg.BG8.cover_url = res.item.cover
     console.log('res:', res)
   }
 })
 
+// Makes search dropdown look a little nicer.
 $('.ui-autocomplete').addClass('f-dropdown');
 
-
-// chrome.extension.getBackgroundPage().play('https://dtp6gm33au72i.cloudfront.net/tf/000/000/025/YxgALb.48k.v3.m4a')
+// When popup loads, run init
+onload = setTimeout(init, 0)
