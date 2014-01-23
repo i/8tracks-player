@@ -107,12 +107,16 @@ setInterval(function() {
     req = new XMLHttpRequest()
     req.open("GET", url, true)
     req.onload = function(err) {
-      if (!err) {
-        bg8.song_reported = true
+      if (err) {
+        console.log('something went wrong reporting the song')
+      } else {
         console.log('reported song successfully')
+        bg8.song_reported = true
       }
     }
+    req.send()
   }
+
   if (player.currentTime == player.duration && player.currentTime > 0) {
     bg8.nextSong()
   }
