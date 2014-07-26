@@ -10,7 +10,7 @@ var BG8 = {
    * Plays a new song in background.html's audio player from url
    */
   play: function(url) {
-    var player = new Audio()
+    var player = document.getElementById('player')
     player.src = url
     player.play()
 
@@ -25,7 +25,9 @@ var BG8 = {
     chrome.notifications.create('0', opt, function() { console.log(opt.iconUrl)} )
   },
 
-  /* Pauses playback on the audio player */
+  /*
+   * Pauses playback on the audio player
+   */
   pause: function() {
     document.getElementById('player').pause()
   },
@@ -50,7 +52,11 @@ var BG8 = {
    */
   currentTime: function() {
     var seconds = document.getElementById('player').currentTime
-    return parseInt(seconds / 60) + ":" + ( parseInt(seconds % 60) < 10 ? "0" + parseInt(seconds % 60) : parseInt(seconds % 60) )
+    return seconds.toString()
+    return parseInt(seconds / 60) + ":" +
+      parseInt(seconds % 60) < 10
+        ? "0" + parseInt(seconds % 60)
+        : parseInt(seconds % 60)
   },
 
   /*
@@ -59,8 +65,12 @@ var BG8 = {
    */
   getDuration: function() {
     var seconds = document.getElementById('player').duration
-    if (isNaN(seconds)) return "0:00"
-    return parseInt(seconds / 60) + ":" + ( parseInt(seconds % 60) < 10 ? "0" + parseInt(seconds % 60) : parseInt(seconds % 60) )
+    return (isNaN(seconds))
+      ? "0:00"
+      : parseInt(seconds / 60) + ":" +
+        parseInt(seconds % 60) < 10
+          ? "0" + parseInt(seconds % 60)
+          : parseInt(seconds % 60)
   },
 
   /*

@@ -28,13 +28,13 @@ function init() {
     }
 
   } else {
-    $('#title').text('  ')
+    $('#title').html('&nbsp;')
     $('#artist').text(' no playlist selected ')
-    $('#playlist').text('  ')
-
+    $('#playlist').html('&nbsp;')
   }
-    $('#current-time').text(bg.BG8 && bg.BG8.currentTime()) // get current time of track
-    $('#duration').text(bg.BG8 && bg.BG8.getDuration()) // get length of track
+
+  $('#current-time').text(bg.BG8 && bg.BG8.currentTime().toHHMMSS()) // get current time of track
+  $('#duration').text(bg.BG8 && bg.BG8.getDuration()) // get length of track
 
   setTimeout(init, 100) // Call init() after 100ms.
 }
@@ -100,7 +100,7 @@ $('#search').autocomplete({
           return {
             label: mix.name,
             mix_id: mix.id,
-            cover: mix.cover_urls.sq100
+            cover: mix.cover_urls.sq100,
           }
         }))
       }
@@ -127,3 +127,17 @@ $('.ui-autocomplete').addClass('f-dropdown');
 
 // When popup loads, run init
 onload = setTimeout(init, 0)
+
+
+String.prototype.toHHMMSS = function () {
+  var sec_num = parseInt(this, 10); // don't forget the second param
+  var hours   = Math.floor(sec_num / 3600);
+  var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+  var seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+  if (hours   < 10) {hours   = "0"+hours;}
+  if (minutes < 10) {minutes = "0"+minutes;}
+  if (seconds < 10) {seconds = "0"+seconds;}
+  var time    = minutes+':'+seconds;
+  return time;
+}
