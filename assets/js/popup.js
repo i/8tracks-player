@@ -27,6 +27,10 @@ function init() {
       $('#pause-resume-button').removeClass('fi-pause').addClass('fi-play')
     }
 
+    if (bg.BG8.liked_by_current_user) {
+      $('#like-button').css('color', 'red')
+    }
+
   } else {
     $('#title').html('&nbsp;')
     $('#artist').text(' no playlist selected ')
@@ -34,7 +38,7 @@ function init() {
   }
 
   $('#current-time').text(bg.BG8 && bg.BG8.currentTime().toHHMMSS()) // get current time of track
-  $('#duration').text(bg.BG8 && bg.BG8.getDuration()) // get length of track
+  $('#duration').text(bg.BG8 && bg.BG8.getDuration().toHHMMSS()) // get length of track
 
   setTimeout(init, 100) // Call init() after 100ms.
 }
@@ -83,6 +87,21 @@ $('#next-button').click(function() {
   }
 })
 
+$('#like-button').click(function() {
+  var bg = chrome.extension.getBackgroundPage()
+  $.ajax('http://8tracks.com/mixes/' + bg.BG8.mix_id + '/toggle_like.jsonh')
+    .done(function(data) {
+      console.log(data);
+      if (data && data.mix && data.mix.liked_by_current_user) {
+        bg.BG8.liked_by_current_user = true
+        $('#like-button').css('color', 'red')
+      } else {
+        bg.BG8.liked_by_current_user = false
+        $('#like-button').css('color', 'black')
+      }
+    })
+})
+
 
 /*
  * Autocomplete bulllllllllllllshit.
@@ -92,15 +111,17 @@ $('#search').autocomplete({
     $.getJSON("http://8tracks.com/mix_sets/keyword:" + req.term + ".json",
       { api_version: 3,
         api_key: '39501dd2e8f36ad35f4738ac3a9e704813e1695d',
-        include: 'mixes',
+        include: 'mixes[liked]',
         tags: req.term
       },
       function(data) {
+        console.log(data)
         res($.map(data.mix_set.mixes, function(mix) {
           return {
             label: mix.name,
             mix_id: mix.id,
             cover: mix.cover_urls.sq100,
+            liked_by_current_user: mix.liked_by_current_user
           }
         }))
       }
@@ -112,32 +133,33 @@ $('#search').autocomplete({
     var bg = chrome.extension.getBackgroundPage()
     bg.BG8.mix_id = res.item.mix_id
     bg.BG8.mix_name = res.item.label
+    bg.BG8.cover_url = res.item.cover
+    bg.BG8.liked_by_current_user = res.item.liked_by_current_user
+
     if (bg.BG8.play_token == null) {
       bg.BG8.getPlayToken()
     } else {
       bg.BG8.playMix()
     }
-    bg.BG8.cover_url = res.item.cover
-    console.log('res:', res)
   }
 })
 
 // Makes search dropdown look a little nicer.
-$('.ui-autocomplete').addClass('f-dropdown');
+$('.ui-autocomplete').addClass('f-dropdown')
 
 // When popup loads, run init
 onload = setTimeout(init, 0)
 
 
 String.prototype.toHHMMSS = function () {
-  var sec_num = parseInt(this, 10); // don't forget the second param
-  var hours   = Math.floor(sec_num / 3600);
-  var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
-  var seconds = sec_num - (hours * 3600) - (minutes * 60);
+  var sec_num = parseInt(this, 10) // don't forget the second param
+  var hours   = Math.floor(sec_num / 3600)
+  var minutes = Math.floor((sec_num - (hours * 3600)) / 60)
+  var seconds = sec_num - (hours * 3600) - (minutes * 60)
 
-  if (hours   < 10) {hours   = "0"+hours;}
-  if (minutes < 10) {minutes = "0"+minutes;}
-  if (seconds < 10) {seconds = "0"+seconds;}
-  var time    = minutes+':'+seconds;
-  return time;
+  if (hours   < 10) {hours   = "0"+hours}
+  if (minutes < 10) {minutes = "0"+minutes}
+  if (seconds < 10) {seconds = "0"+seconds}
+  var time    = minutes+':'+seconds
+  return time
 }

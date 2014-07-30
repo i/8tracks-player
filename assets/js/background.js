@@ -5,6 +5,7 @@ var BG8 = {
   cover_url: null,
   play_token: null,
   song_reported: false,
+  liked_by_current_user: null,
 
   /*
    * Plays a new song in background.html's audio player from url
@@ -53,10 +54,6 @@ var BG8 = {
   currentTime: function() {
     var seconds = document.getElementById('player').currentTime
     return seconds.toString()
-    return parseInt(seconds / 60) + ":" +
-      parseInt(seconds % 60) < 10
-        ? "0" + parseInt(seconds % 60)
-        : parseInt(seconds % 60)
   },
 
   /*
@@ -64,13 +61,8 @@ var BG8 = {
    * MM:SS
    */
   getDuration: function() {
-    var seconds = document.getElementById('player').duration
-    return (isNaN(seconds))
-      ? "0:00"
-      : parseInt(seconds / 60) + ":" +
-        parseInt(seconds % 60) < 10
-          ? "0" + parseInt(seconds % 60)
-          : parseInt(seconds % 60)
+    var seconds = document.getElementById('player').duration || 0;
+    return seconds.toString()
   },
 
   /*
